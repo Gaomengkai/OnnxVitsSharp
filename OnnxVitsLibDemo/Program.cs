@@ -28,7 +28,7 @@ var model = new OnnxVitsLib.VitsModel(@"E:\ai\model\onnx_nene\Mods\Nene", "Nene_
 var x = new Int64[] { 25,38,19,13,33,25,25,18,25,34,13,20,23,13,37,28,12,2 };
 
 var xin = add0(x);
-var res = model.Run(xin);
+var res = model.Run(xin,sid:2);
 
 static void SaveWavFile(NDArray wav, int sampleRate, string path) {
     // wav归一化
