@@ -1,0 +1,21 @@
+﻿<Window x:Class="TestUI.Window1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Window1" Height="300" Width="300">
+    <Window.Resources>
+        <DataTemplate x:Key="itemTemplate">
+            <StackPanel Orientation="Horizontal">
+                <TextBox Text="{Binding Path=Name}" Width="50" />
+                <ComboBox ItemsSource="{Binding Path=PhonebookEntries}"
+                    DisplayMemberPath="Name"
+                    SelectedValuePath="Name"
+                    SelectedValue="{Binding Path=PhonebookEntry}"
+                    Width="200"/>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <ItemsControl ItemsSource="{Binding Path=Connections}"
+            ItemTemplate="{StaticResource itemTemplate}" />
+    </Grid>
+</Window>

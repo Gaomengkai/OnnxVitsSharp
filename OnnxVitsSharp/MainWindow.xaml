@@ -1,0 +1,52 @@
+﻿<Window x:Class="OnnxVitsSharp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        xmlns:local="clr-namespace:OnnxVitsSharp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+               
+               >
+    
+    <DockPanel>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock Text="状态栏" Name="txtStatusBar"></TextBlock>
+            </StatusBarItem>
+        </StatusBar>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*"></ColumnDefinition>
+                <ColumnDefinition Width="6*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical" Grid.Column="0" Margin="9">
+                <!--模型目录选择部分-->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="8*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"></RowDefinition>
+                        <RowDefinition Height="5*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <hc:SimpleText Grid.Row ="0" Text="选择模型目录" FontSize="13" Margin="3"></hc:SimpleText>
+                    <TextBox Grid.Row="1" Grid.Column="0" Style="{StaticResource TextBoxExtend}" ></TextBox>
+                    <Button Name="BtnBrowse" Grid.Row="1" Grid.Column="1" Style="{StaticResource ButtonPrimary}" 
+                            Content="浏览" 
+                            Click="BtnBrowse_Button_Click"></Button>
+                </Grid>
+                <GridSplitter Height="12"></GridSplitter>
+                <!--选择人物-->
+                <hc:SimpleText Grid.Row ="0" Text="选择人物" FontSize="13" Margin="3"></hc:SimpleText>
+                <ComboBox x:Name="CobSpeakerSel" ItemsSource="{Binding Speakers}" 
+                          DisplayMemberPath="_name" SelectedValuePath="_id" SelectedValue="{Binding Path=Speaker}"
+                          Margin="0" FontSize="13" IsEnabled="False"
+                          Width="auto" hc:InfoElement.TitleWidth="auto" hc:InfoElement.TitlePlacement="Left" 
+                          hc:InfoElement.Title="" Style="{StaticResource ComboBoxExtend}" Text="正文1"/>
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+</Window>
