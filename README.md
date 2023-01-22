@@ -38,7 +38,54 @@ var res = model.Run(xin,sid:2);
 SaveWavFile(res, 22050, "out.wav");
 ```
 
+#### 现支持压缩包直接读取模型。分发更方便。
 
+(现在仅仅处于试验阶段。已经在Demo中实现。)
+
+读取方法：
+
+```csharp
+FileStream file = File.Open(@"Nene.zip", FileMode.Open);
+ZipArchive zip = new ZipArchive(file);
+JsonModelConfig cfg = new();
+var configjson = zip.GetEntry("config.json");
+if(configjson != null)
+{
+    using (var jstream = configjson.Open())
+    {
+        cfg = System.Text.Json.JsonSerializer.Deserialize<JsonModelConfig>(jstream);
+    }
+}
+// 直接输入symbols中包括的数据（还没做cleaner）
+string text = "ohayougozaimasu!harukun";
+var indecies = Text2SymbolIndex(text, cfg.Symbol); //cfg内容未作检查
+
+// Here we can load the Zip Archive directly.
+var model = new OnnxVitsLib.VitsModel(file, isMultiSpeaker: true);
+var xin = add0(indecies);
+VitsModelRunOptions runOptions = new()
+{
+    length_scale = 1.2F
+};
+var res = model.Run(xin, 1,runOptions); //sid范围未作检查
+SaveWavFile(res, cfg.Rate, "out1.wav");
+```
+
+
+
+压缩包内容如下（应该不用解释罢）：
+
+```bash
+Nene.zip
+├── config.json
+├── dec.onnx
+├── dp.onnx
+├── emb.onnx
+├── enc_p.onnx
+└── flow.onnx
+```
+
+压缩包的直接读取目前只支持zip。json格式与其说兼容，不如说参照的事M佬的[MoeSS](https://github.com/NaruseMioShirakana/MoeSS#%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5). 
 
 #### 实现😱：
 
@@ -52,6 +99,7 @@ SaveWavFile(res, 22050, "out.wav");
 - [ ] other cleaners
 - [ ] 后端：
 - [ ] 读取配置的json
+- [x] 读取配置的json(仅仅Demo中实现)
 - [x] onnx骨架
 - [x] 输出wav
 - [ ] 多格式输出
