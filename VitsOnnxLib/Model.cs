@@ -55,8 +55,6 @@ namespace OnnxVitsLib
             session_dec = new InferenceSession(dec_path);
             session_enc_p = new InferenceSession(enc_p_path);
             session_flow = new InferenceSession(flow_path);
-            FileStream stream = File.Open(flow_path,FileMode.Open);
-            System.Console.WriteLine(stream.Length);
             this.isMultiSpeaker = isMultiSpeaker;
         }
         public VitsModel(FileStream archiveStream, bool isMultiSpeaker = true)
@@ -118,6 +116,7 @@ namespace OnnxVitsLib
                     session_emb = OpenSession(emb_path);
                 this.isMultiSpeaker = isMultiSpeaker;
             }
+            archiveStream.Dispose();
         }
         protected (DisposableNamedOnnxValue,
         DisposableNamedOnnxValue,

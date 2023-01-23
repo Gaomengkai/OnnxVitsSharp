@@ -10,12 +10,12 @@ namespace OnnxVitsLib
     {
 
     }
-    
+
     public partial class VitsModel
     {
-        public NDArray Run(Int64[] xin, int? sid = null, VitsModelRunOptions? opts=null)
+        public NDArray Run(Int64[] xin, int? sid = null, VitsModelRunOptions? opts = null)
         {
-            if(opts == null)
+            if (opts == null)
             {
                 opts = new VitsModelRunOptions();
             }
@@ -100,7 +100,7 @@ namespace OnnxVitsLib
             Util.PrintShapeN("t_1", t_1);
             var t_2 = m_p.AsTensor<float>().ToNDArray().transpose(new int[] { 0, 2, 1 })["0"];
             Util.PrintShapeN("t_2", t_2);
-            var n_m_p = np.matmul(t_1, t_2);
+            var n_m_p = np.matmul(t_1, t_2);//耗时
             n_m_p = n_m_p.transpose(new int[] { 1, 0 });
             n_m_p = n_m_p.reshape(new int[] { 1, n_m_p.shape[0], n_m_p.shape[1] });
             Util.PrintShapeN("n_m_p", n_m_p);
@@ -130,6 +130,7 @@ namespace OnnxVitsLib
                 var n_z = z.AsTensor<float>().ToNDArray();
                 var n_z_in = n_z * n_y_mask.ToTensor<float>().ToNDArray();
                 o = this.runDec(n_z_in.ToTensor<float>(), n_g.ToTensor<float>());
+                z.Dispose();
                 Util.PrintShape("o", o.AsTensor<float>());
             }
             else
@@ -141,8 +142,8 @@ namespace OnnxVitsLib
                 o = this.runDec(n_z_in.ToTensor<float>());
                 Util.PrintShape("o", o.AsTensor<float>());
             }
-
             var n_final_output = o.AsTensor<float>().ToNDArray()["0"]["0"];
+            o.Dispose();
             Util.PrintShapeN("n_final_output", n_final_output);
             // SaveWavFile(n_final_output, 22050, "test.wav");
             return n_final_output;
