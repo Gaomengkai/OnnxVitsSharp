@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CleanersAdaptor\CleanersAdaptor.csproj" />
     <ProjectReference Include="..\VitsOnnxLib\OnnxVitsLib.csproj" />
   </ItemGroup>
 

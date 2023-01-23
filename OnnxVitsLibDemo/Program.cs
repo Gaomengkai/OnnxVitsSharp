@@ -60,8 +60,23 @@ namespace OVDemo
                 {
                     indecies.Add(idx);
                 }
+                else
+                {
+                    Console.WriteLine($"Cannot translate {c} to symbol.");
+                    indecies.Add(0);
+                }
             }
             return indecies.ToArray();
+        }
+        public static string SymbolIndex2Text(long[] symbolsIndecies, string symbols)
+        {
+            string res = "";
+            foreach(var idx in symbolsIndecies)
+            {
+                if (idx >= symbols.Length) continue;
+                res += symbols[(int)idx];
+            }
+            return res;
         }
         public static void Main(string[] args)
         {
@@ -85,23 +100,38 @@ namespace OVDemo
             {
                 Console.WriteLine("Input romaji:");
                 string text;
-                text = Console.ReadLine();
-                text = text.Replace("sh", "ʃ").Replace("ch", "ʧ").Replace("ts", "ʦ");
+                //text = Console.ReadLine();
+                text = "こんにちわ、わがあるじさま";
+                using var cleaners2 = new CleanersAdapter.JapaneseCleaners2("./Resources/");
+                text = cleaners2.Transform(text);
+                //text = text.Replace("sh", "ʃ").Replace("ch", "ʧ").Replace("ts", "ʦ");
+                Console.WriteLine(text);
+                text = text.Replace("ʦ","ts");
+                Console.WriteLine(text);
                 // 计时开始
                 Stopwatch stopwatch = new();
                 stopwatch.Start();
                 var indecies = Text2SymbolIndex(text, cfg.Symbol);
-                //var x = new Int64[] { 25, 38, 19, 13, 33, 25, 25, 18, 25, 34, 13, 20, 23, 13, 37, 28, 12, 2 };
+                Console.WriteLine(SymbolIndex2Text(indecies,cfg.Symbol));
                 var xin = add0(indecies);
                 VitsModelRunOptions runOptions = new()
                 {
-                    length_scale = 1.2F
+                    length_scale = 1.3F,
+                    noise_scale_w=0.1F
                 };
                 var res = model.Run(xin, 0, runOptions);
                 SaveWavFile(res, cfg.Rate, "out1.wav");
                 Console.WriteLine("Saved to out1.wav");
                 Console.WriteLine($"Time: {stopwatch.ElapsedMilliseconds}ms");
+                using var audiofile = new AudioFileReader("out1.wav");
+                using var outputDevice = new WaveOutEvent();
+                outputDevice.Init(audiofile);
+                outputDevice.Play();
+                while (outputDevice.PlaybackState == PlaybackState.Playing)
+                    Thread.Sleep(100);
                 stopwatch.Stop();
+                //cleaners2.Dispose();
+                break;
             }
 
         }
