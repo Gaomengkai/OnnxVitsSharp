@@ -6,7 +6,7 @@
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:local="clr-namespace:OnnxVitsSharp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="OnnxVitsSharp" Height="580" Width="750"
                
                >
     
@@ -16,14 +16,30 @@
                 <TextBlock Text="状态栏" Name="txtStatusBar"></TextBlock>
             </StatusBarItem>
         </StatusBar>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="关于" >
+                <TextBlock Text="开源许可协议"></TextBlock></MenuItem>
+        </Menu>
         <Grid>
+            <!--左右分割-->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5*"></ColumnDefinition>
                 <ColumnDefinition Width="6*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Vertical" Grid.Column="0" Margin="9">
+            <!--左边部分-->
+            <Grid Grid.Column="0" Margin="9">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label Width="auto" Grid.Row="0" HorizontalAlignment="Stretch" Margin="6" BorderThickness="0">Input</Label>
                 <!--模型目录选择部分-->
-                <Grid>
+                <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="8*"></ColumnDefinition>
                         <ColumnDefinition Width="2*"></ColumnDefinition>
@@ -35,17 +51,40 @@
                     <hc:SimpleText Grid.Row ="0" Text="选择模型目录" FontSize="13" Margin="3"></hc:SimpleText>
                     <TextBox Grid.Row="1" Grid.Column="0" Style="{StaticResource TextBoxExtend}" ></TextBox>
                     <Button Name="BtnBrowse" Grid.Row="1" Grid.Column="1" Style="{StaticResource ButtonPrimary}" 
-                            Content="浏览" 
-                            Click="BtnBrowse_Button_Click"></Button>
+                            Content="浏览" HorizontalAlignment="Stretch" Margin="6,0"
+                            Click="BtnBrowse_Button_Click" MinWidth="40"></Button>
                 </Grid>
-                <GridSplitter Height="12"></GridSplitter>
+                <GridSplitter Height="12" Grid.Row="2"></GridSplitter>
                 <!--选择人物-->
-                <hc:SimpleText Grid.Row ="0" Text="选择人物" FontSize="13" Margin="3"></hc:SimpleText>
-                <ComboBox x:Name="CobSpeakerSel" ItemsSource="{Binding Speakers}" 
+                <hc:SimpleText Grid.Row ="3" Text="选择人物" FontSize="13" Margin="3"></hc:SimpleText>
+                <ComboBox x:Name="CobSpeakerSel" ItemsSource="{Binding Speakers}" Grid.Row="4"
                           DisplayMemberPath="_name" SelectedValuePath="_id" SelectedValue="{Binding Path=Speaker}"
-                          Margin="0" FontSize="13" IsEnabled="False"
+                          Margin="0" FontSize="13" IsEnabled="True"
                           Width="auto" hc:InfoElement.TitleWidth="auto" hc:InfoElement.TitlePlacement="Left" 
                           hc:InfoElement.Title="" Style="{StaticResource ComboBoxExtend}" Text="正文1"/>
+                <!--文本-->
+                <hc:SimpleText Grid.Row ="5" Text="文本：" FontSize="13" Margin="3"></hc:SimpleText>
+                <TextBox MinHeight="120" Margin="0,6" Grid.Row="6" VerticalContentAlignment="Top" VerticalAlignment="Stretch"></TextBox>
+            </Grid>
+            <!--右侧部分-->
+            <StackPanel Orientation="Vertical" Grid.Column="1" Margin="9">
+                <Label Width="auto" HorizontalAlignment="Stretch" Margin="6" BorderThickness="0">Output</Label>
+                <hc:Row>
+                    <hc:Col Span="4">
+                        <Button Margin="6" HorizontalAlignment="Stretch" Style="{DynamicResource ButtonSuccess}">播放</Button>
+                    </hc:Col>
+                    <hc:Col Span="20">
+                        <ProgressBar Value="45" Margin="6" HorizontalAlignment="Stretch" Style="{DynamicResource ProgressBarSuccess}"></ProgressBar>
+                    </hc:Col>
+                </hc:Row>
+                <hc:Row Margin="6">
+                    <hc:Col Span="16">
+                        <Button HorizontalAlignment="Stretch" Margin="2,4" Style="{DynamicResource ButtonInfo}">👉转换👆</Button>
+                    </hc:Col>
+                    <hc:Col Span="8">
+                        <Button HorizontalAlignment="Stretch" Margin="2,4" Style="{DynamicResource ButtonDanger}">重置</Button>
+                    </hc:Col>
+                </hc:Row>
             </StackPanel>
         </Grid>
     </DockPanel>
