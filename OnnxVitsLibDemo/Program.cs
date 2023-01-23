@@ -6,6 +6,7 @@ using static OnnxVitsLib.TensorConvert;
 using System.Text;
 using NAudio.Wave;
 using System.IO.Compression;
+using System.Diagnostics;
 
 namespace OVDemo
 {
@@ -64,8 +65,11 @@ namespace OVDemo
         }
         public static void Main(string[] args)
         {
-            // var model1 = new OnnxVitsLib.VitsModel(@"E:\ai\model\onnx_nene\Mods\Nene", "");
-            FileStream file = File.Open(@"E:\ai\model\onnx_nene\Mods\Nene\Nene.zip", FileMode.Open);
+            string zipName = @"E:\ai\model\onnx_nene\Mods\Nene\Nene.zip";
+            if (args.Length >=1)
+                zipName = args[0];
+             //var model = new OnnxVitsLib.VitsModel(@"E:\ai\model\onnx_nene\Mods\Nene", "");
+            FileStream file = File.Open(zipName, FileMode.Open);
             ZipArchive zip = new ZipArchive(file);
             JsonModelConfig cfg = new();
             var configjson = zip.GetEntry("config.json");
@@ -76,17 +80,30 @@ namespace OVDemo
                     cfg = System.Text.Json.JsonSerializer.Deserialize<JsonModelConfig>(jstream);
                 }
             }
-            string text = "ohayougozaimasu!harukun";
-            var indecies = Text2SymbolIndex(text, cfg.Symbol);
             var model = new OnnxVitsLib.VitsModel(file, isMultiSpeaker: true);
-            //var x = new Int64[] { 25, 38, 19, 13, 33, 25, 25, 18, 25, 34, 13, 20, 23, 13, 37, 28, 12, 2 };
-            var xin = add0(indecies);
-            VitsModelRunOptions runOptions = new()
+            while (true)
             {
-                length_scale = 1.2F
-            };
-            var res = model.Run(xin, 1,runOptions);
-            SaveWavFile(res, cfg.Rate, "out1.wav");
+                Console.WriteLine("Input romaji:");
+                string text;
+                text = Console.ReadLine();
+                text = text.Replace("sh", "ʃ").Replace("ch", "ʧ").Replace("ts", "ʦ");
+                // 计时开始
+                Stopwatch stopwatch = new();
+                stopwatch.Start();
+                var indecies = Text2SymbolIndex(text, cfg.Symbol);
+                //var x = new Int64[] { 25, 38, 19, 13, 33, 25, 25, 18, 25, 34, 13, 20, 23, 13, 37, 28, 12, 2 };
+                var xin = add0(indecies);
+                VitsModelRunOptions runOptions = new()
+                {
+                    length_scale = 1.2F
+                };
+                var res = model.Run(xin, 0, runOptions);
+                SaveWavFile(res, cfg.Rate, "out1.wav");
+                Console.WriteLine("Saved to out1.wav");
+                Console.WriteLine($"Time: {stopwatch.ElapsedMilliseconds}ms");
+                stopwatch.Stop();
+            }
+
         }
 
     }
